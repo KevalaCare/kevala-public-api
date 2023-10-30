@@ -188,34 +188,42 @@ components:
           $ref: '#/components/schemas/Address'
       required:
         - first_name
-
+                  
     EmployeeRelationships:
       type: object
+      required: [jobs]
       properties:
-        location:
+        jobs:
           type: object
+          required: [data]
           properties:
             data:
-              type: object
-              properties:
-                id:
-                  type: string
-                  example: "1"
-                type:
-                  type: string
-                  example: "locations"
-        position:
-          type: object
-          properties:
-            data:
-              type: object
-              properties:
-                id:
-                  type: string
-                  example: "1"
-                type:
-                  type: string
-                  example: "positions"
+              type: array
+              minItems: 1
+              items:
+                type: object
+                required: [type, relationships]
+                properties:
+                  type:
+                    type: string
+                    enum: [jobs]
+                    example: jobs
+                  relationships:
+                    type: object
+                    required: [position, location]
+                    properties:
+                      position:
+                        type: object
+                        required: [data]
+                        properties:
+                          data:
+                            $ref: '#/components/schemas/PositionsRelationship'
+                      location:
+                        type: object
+                        required: [data]
+                        properties:
+                          data:
+                            $ref: '#/components/schemas/LocationsRelationship'
 
     Address:
       type: object
@@ -295,6 +303,18 @@ components:
         name:
           type: string
           example: "Headquarters"
+          
+    LocationsRelationship:
+      type: object
+      required: [id, type]
+      properties:
+        id:
+          type: string
+          example: "1"
+        type:
+          type: string
+          enum: [locations]
+          example: "locations"
 
     PositionResponse:
       type: object
@@ -325,3 +345,15 @@ components:
         title:
           type: string
           example: "Manager"
+          
+    PositionsRelationship:
+      type: object
+      required: [id, type]
+      properties:
+        id:
+          type: string
+          example: "1"
+        type:
+          type: string
+          enum: [positions]
+          example: "positions"
