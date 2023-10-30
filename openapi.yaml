@@ -1,0 +1,327 @@
+openapi: 3.0.0
+info:
+  title: Kevala API
+  description: |-
+    **NOTICE**: This API is currently under development. Some or all of the information on this page can change at any point before the finalized version of the API. This document will be updated throughout the development process.
+  
+    The Kevala API is organized around [REST](http://en.wikipedia.org/wiki/Representational_State_Transfer) and utilizes the [JSON:API](https://jsonapi.org/) specification. Our API has predictable resource-oriented URLs and uses BasicAuth for authentication.
+  version: 0.0.1
+servers:
+  - url: https://api.kevala.local:3001/v1
+    description: Development
+  - url: https://api.staging.kevala.care/v1
+    description: Staging
+  - url: https://api.kevala.care/v1
+    description: Production
+tags:
+  - name: Employees
+    description: Manage employees associated with your organization
+  - name: Locations
+    description: Manage locations associated with your organization
+  - name: Positions
+    description: Manage positions associated with your organization
+security:
+  - basicAuth: []
+
+paths:
+  /employees:
+    get:
+      tags:
+        - Employees
+      summary: Get a list of employees
+      responses:
+        '200':
+          description: A list of employees in JSON:API format
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/EmployeeListResponse'
+    post:
+      tags:
+        - Employees
+      summary: Create an employee
+      requestBody:
+        required: true
+        content:
+          application/vnd.api+json:
+            schema:
+              $ref: '#/components/schemas/EmployeeResource'
+      responses:
+        '201':
+          description: Created employee in JSON:API format
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/EmployeeResponse'
+  /employees/{employeeId}:
+    get:
+      tags:
+        - Employees
+      summary: Get a single employee by ID
+      parameters:
+        - name: employeeId
+          in: path
+          description: ID of the employee to retrieve
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A single employee in JSON:API format
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/EmployeeResponse'
+        '404':
+          description: Employee not found
+    patch:
+      tags:
+        - Employees
+      summary: Update an existing employee
+      parameters:
+        - name: employeeId
+          in: path
+          description: ID of the employee to update
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/vnd.api+json:
+            schema:
+              $ref: '#/components/schemas/EmployeeResource'
+      responses:
+        '200':
+          description: Updated employee in JSON:API format
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/EmployeeResponse'
+        '404':
+          description: Employee not found
+
+  /locations:
+    get:
+      tags:
+        - Locations
+      summary: Get a list of locations
+      responses:
+        '200':
+          description: A list of locations in JSON:API format
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/LocationListResponse'
+
+  /positions:
+    get:
+      tags:
+        - Positions
+      summary: Get a list of positions
+      responses:
+        '200':
+          description: A list of positions in JSON:API format
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/PositionListResponse'
+
+components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+
+  schemas:
+    EmployeeResource:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            type:
+              type: string
+              enum: [employees]
+              example: "employees"
+            attributes:
+              $ref: '#/components/schemas/EmployeeAttributes'
+            relationships:
+              $ref: '#/components/schemas/EmployeeRelationships'
+          required:
+            - type
+            - attributes
+            - relationships
+      required:
+        - data
+
+    EmployeeAttributes:
+      type: object
+      properties:
+        first_name:
+          type: string
+          example: "John"
+        middle_name:
+          type: string
+          example: "Quincy"
+        last_name:
+          type: string
+          example: "Doe"
+        birthdate:
+          type: string
+          format: date
+          example: "1970-01-31"
+        email:
+          type: string
+          example: "john.doe@example.com"
+        phone:
+          type: string
+          example: "+15555555555"
+        start_date:
+          type: string
+          format: date
+          example: "2000-12-31"
+        external_identifier:
+          type: string
+          example: "ABC-123"
+        address:
+          $ref: '#/components/schemas/Address'
+      required:
+        - first_name
+
+    EmployeeRelationships:
+      type: object
+      properties:
+        location:
+          type: object
+          properties:
+            data:
+              type: object
+              properties:
+                id:
+                  type: string
+                  example: "1"
+                type:
+                  type: string
+                  example: "locations"
+        position:
+          type: object
+          properties:
+            data:
+              type: object
+              properties:
+                id:
+                  type: string
+                  example: "1"
+                type:
+                  type: string
+                  example: "positions"
+
+    Address:
+      type: object
+      properties:
+        street:
+          type: string
+          example: "123 Main St"
+        city:
+          type: string
+          example: Anytown
+        state:
+          type: string
+          example: WA
+        postal_code:
+          type: string
+          example: "12345"
+
+    EmployeeListResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmployeeResponse'
+
+    EmployeeResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "1"
+        type:
+          type: string
+          example: "employees"
+        attributes:
+          $ref: '#/components/schemas/EmployeeAttributes'
+        relationships:
+          $ref: '#/components/schemas/EmployeeRelationships'
+        included:
+          type: array
+          items:
+            anyOf:
+              - $ref: '#/components/schemas/LocationResponse'
+              - $ref: '#/components/schemas/PositionResponse'
+      required:
+        - id
+        - type
+        - attributes
+
+    LocationResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "1"
+        type:
+          type: string
+          example: "locations"
+        attributes:
+          $ref: '#/components/schemas/LocationAttributes'
+      required:
+        - id
+        - type
+        - attributes
+
+    LocationListResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/LocationResponse'
+
+    LocationAttributes:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "Headquarters"
+
+    PositionResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "1"
+        type:
+          type: string
+          example: "positions"
+        attributes:
+          $ref: '#/components/schemas/PositionAttributes'
+      required:
+        - id
+        - type
+
+    PositionListResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/PositionResponse'
+
+    PositionAttributes:
+      type: object
+      properties:
+        title:
+          type: string
+          example: "Manager"
