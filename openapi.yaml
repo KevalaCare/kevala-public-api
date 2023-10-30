@@ -188,7 +188,7 @@ components:
           $ref: '#/components/schemas/Address'
       required:
         - first_name
-                  
+
     EmployeeRelationships:
       type: object
       required: [jobs]
