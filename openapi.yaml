@@ -52,7 +52,12 @@ paths:
           content:
             application/vnd.api+json:
               schema:
-                $ref: '#/components/schemas/EmployeeResponse'
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/EmployeeResponse'
+                  included:
+                    $ref: '#/components/schemas/EmployeeIncludedList'
   /employees/{employeeId}:
     get:
       tags:
@@ -71,7 +76,12 @@ paths:
           content:
             application/vnd.api+json:
               schema:
-                $ref: '#/components/schemas/EmployeeResponse'
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/EmployeeResponse'
+                  included:
+                    $ref: '#/components/schemas/EmployeeIncludedList'
         '404':
           description: Employee not found
     patch:
@@ -97,7 +107,12 @@ paths:
           content:
             application/vnd.api+json:
               schema:
-                $ref: '#/components/schemas/EmployeeResponse'
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/EmployeeResponse'
+                  included:
+                    $ref: '#/components/schemas/EmployeeIncludedList'
         '404':
           description: Employee not found
 
@@ -229,6 +244,8 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/EmployeeResponse'
+        included:
+          $ref: '#/components/schemas/EmployeeIncludedList'
 
     EmployeeResponse:
       type: object
@@ -243,16 +260,17 @@ components:
           $ref: '#/components/schemas/EmployeeAttributes'
         relationships:
           $ref: '#/components/schemas/EmployeeRelationships'
-        included:
-          type: array
-          items:
-            anyOf:
-              - $ref: '#/components/schemas/LocationResponse'
-              - $ref: '#/components/schemas/PositionResponse'
       required:
         - id
         - type
         - attributes
+
+    EmployeeIncludedList:
+      type: array
+      items:
+        anyOf:
+          - $ref: '#/components/schemas/LocationResponse'
+          - $ref: '#/components/schemas/PositionResponse'
 
     LocationResponse:
       type: object
