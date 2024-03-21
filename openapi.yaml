@@ -20,6 +20,10 @@ tags:
     description: Manage locations associated with your organization
   - name: Positions
     description: Manage positions associated with your organization
+  - name: Shift Allocations
+    description: Manage shift allocations associated with your organization
+  - name: Shifts
+    description: Manage shifts shared with your organization
 security:
   - basicAuth: []
 
@@ -142,6 +146,118 @@ paths:
               schema:
                 $ref: '#/components/schemas/PositionListResponse'
 
+  /shift_allocations:
+    post:
+      tags:
+        - Shift Allocations
+      summary: Create a shift allocation
+      requestBody:
+        required: true
+        content:
+          application/vnd.api+json:
+            schema:
+              $ref: '#/components/schemas/ShiftAllocationPostBody'
+      responses:
+        '200':
+          description: Created shift allocation in JSON:API format
+          content:
+            application/vnd.api+json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/ShiftAllocationResponse'
+
+  /shift_allocations/{shiftAllocationId}:
+    get:
+      tags:
+        - Shift Allocations
+      summary: Get a single shift allocation by ID
+      parameters:
+        - name: shiftAllocationId
+          in: path
+          description: ID of the shift allocation to retrieve
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A single shift allocation in JSON:API format
+          content:
+            application/vnd.api+json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/ShiftAllocationResponse'
+                  included:
+                    $ref: '#/components/schemas/ShiftAllocationIncludedList'
+    patch:
+      tags:
+        - Shift Allocations
+      summary: Update an existing shift allocation
+      parameters:
+        - name: shiftAllocationId
+          in: path
+          description: ID of the shift allocation to update
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/vnd.api+json:
+            schema:
+              $ref: '#/components/schemas/ShiftAllocationPatchBody'
+      responses:
+        '200':
+          description: Update shift allocation in JSON:API format
+          content:
+            application/vnd.api+json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/ShiftAllocationResponse'
+
+  /shifts:
+    get:
+      tags:
+        - Shifts
+      summary: Get a list of shifts
+      responses:
+        '200':
+          description: A list of shifts in JSON:API format
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ShiftListResponse'
+
+  /shifts/{shiftId}:
+    get:
+      tags:
+        - Shifts
+      summary: Get a single shift by ID
+      parameters:
+        - name: shiftId
+          in: path
+          description: ID of the shift to retrieve
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A single shift in JSON:API format
+          content:
+            application/vnd.api+json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/ShiftResponse'
+                  included:
+                    $ref: '#/components/schemas/LocationResponse'
+
 components:
   securitySchemes:
     basicAuth:
@@ -204,6 +320,18 @@ components:
       required:
         - first_name
 
+    EmployeeRelationship:
+      type: object
+      required: [id, type]
+      properties:
+        id:
+          type: string
+          example: '1'
+        type:
+          type: string
+          enum: [shifts]
+          example: 'employees'
+
     EmployeeRelationships:
       type: object
       required: [position, location]
@@ -236,6 +364,22 @@ components:
         postal_code:
           type: string
           example: '12345'
+
+    Facility:
+      type: object
+      properties:
+        description:
+          type: string
+          example: 'Example Facility'
+        required_equipment:
+          type: string
+          example: 'item one, item two, item three'
+        staffing_primary_contact_name:
+          type: string
+          example: 'John Doe'
+        staffing_primary_contact_phone:
+          type: string
+          example: '+15555555555'
 
     EmployeeListResponse:
       type: object
@@ -302,6 +446,13 @@ components:
         name:
           type: string
           example: 'Headquarters'
+        timezone:
+          type: string
+          example: 'US/Pacific'
+        address:
+          $ref: '#/components/schemas/Address'
+        facility:
+          $ref: '#/components/schemas/Facility'
 
     LocationsRelationship:
       type: object
@@ -356,3 +507,210 @@ components:
           type: string
           enum: [positions]
           example: 'positions'
+
+    ShiftListResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ShiftResponse'
+        included:
+          type: array
+          items:
+            $ref: '#/components/schemas/LocationResponse'
+
+    ShiftResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          example: '1'
+        type:
+          type: string
+          example: 'shifts'
+        attributes:
+          $ref: '#/components/schemas/ShiftAttributes'
+        relationships:
+          type: array
+          items:
+            $ref: '#/components/schemas/LocationsRelationship'
+      required:
+        - id
+        - type
+
+    ShiftAttributes:
+      type: object
+      properties:
+        status:
+          type: string
+          example: 'open'
+        starts_at:
+          type: string
+          format: date-time
+          example: '2020-01-01T06:00:00.000000Z'
+        ends_at:
+          type: string
+          format: date-time
+          example: '2020-01-01T22:00:00.000000Z'
+        positions:
+          type: array
+          items:
+            type: string
+          example: ['rn']
+        inserted_at:
+          type: string
+          format: date-time
+          example: '2020-01-01T06:00:00.000000Z'
+        updated_at:
+          type: string
+          format: date-time
+          example: '2020-01-01T06:00:00.000000Z'
+        rates:
+          type: array
+          items:
+            type: object
+            properties:
+              position:
+                type: string
+                example: 'rn'
+              currency:
+                type: string
+                example: 'USD'
+              bill_rate:
+                type: integer
+                description: "Decimal value in cents. Example: 6000 = $60.00"
+                example: 6000
+              pay_rate:
+                type: integer
+                description: "Decimal value in cents. Example: 5000 = $50.00"
+                example: 5000
+
+    ShiftRelationship:
+      type: object
+      required: [id, type]
+      properties:
+        id:
+          type: string
+          example: '1'
+        type:
+          type: string
+          enum: [shifts]
+          example: 'shifts'
+
+    ShiftAllocationAttributes:
+      type: object
+      properties:
+        comment:
+          type: string
+          example: 'Example comment'
+        position:
+          type: string
+          example: 'rn'
+        status:
+          type: string
+          example: 'pending'
+        inserted_at:
+          type: string
+          format: date-time
+          example: '2020-01-01T06:00:00.000000Z'
+        updated_at:
+          type: string
+          format: date-time
+          example: '2020-01-01T06:00:00.000000Z'
+
+    ShiftAllocationRelationships:
+      type: object
+      required: [employee, shift]
+      properties:
+        employee:
+          type: object
+          required: [data]
+          properties:
+            data:
+              $ref: '#/components/schemas/EmployeeRelationship'
+        shift:
+          type: object
+          required: [data]
+          properties:
+            data:
+              $ref: '#/components/schemas/ShiftRelationship'
+
+    ShiftAllocationResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          example: '1'
+        type:
+          type: string
+          example: 'shift_allocations'
+        attributes:
+          $ref: '#/components/schemas/ShiftAllocationAttributes'
+        relationships:
+          type: array
+          items:
+            $ref: '#/components/schemas/ShiftAllocationRelationships'
+      required:
+        - id
+        - type
+
+    ShiftAllocationIncludedList:
+      type: array
+      items:
+        anyOf:
+          - $ref: '#/components/schemas/EmployeeResponse'
+          - $ref: '#/components/schemas/ShiftResponse'
+
+    ShiftAllocationPatchBody:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            type:
+              type: string
+              example: 'shift_allocations'
+            id:
+              type: string
+              example: '1'
+            attributes:
+              type: object
+              properties:
+                status:
+                  type: string
+                  example: 'withdrawn'
+          required:
+            - type
+            - id
+            - attributes
+            - relationships
+      required:
+        - data
+
+    ShiftAllocationPostBody:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            type:
+              type: string
+              example: 'shift_allocations'
+            attributes:
+              type: object
+              properties:
+                comment:
+                  type: string
+                  example: 'Example comment'
+            relationships:
+              type: array
+              items:
+                $ref: '#/components/schemas/ShiftAllocationRelationships'
+          required:
+            - type
+            - id
+            - attributes
+            - relationships
+      required:
+        - data
