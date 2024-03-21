@@ -20,6 +20,10 @@ tags:
     description: Manage locations associated with your organization
   - name: Positions
     description: Manage positions associated with your organization
+  - name: Shift Allocations
+    description: Manage shift allocations associated with your organization
+  - name: Shifts
+    description: Manage shifts shared with your organization
 security:
   - basicAuth: []
 
@@ -543,9 +547,11 @@ components:
           example: 'open'
         starts_at:
           type: string
+          format: date-time
           example: '2020-01-01T06:00:00.000000Z'
         ends_at:
           type: string
+          format: date-time
           example: '2020-01-01T22:00:00.000000Z'
         positions:
           type: array
@@ -554,9 +560,11 @@ components:
           example: ['rn']
         inserted_at:
           type: string
+          format: date-time
           example: '2020-01-01T06:00:00.000000Z'
         updated_at:
           type: string
+          format: date-time
           example: '2020-01-01T06:00:00.000000Z'
         rates:
           type: array
@@ -571,9 +579,11 @@ components:
                 example: 'USD'
               bill_rate:
                 type: integer
+                description: "Decimal value in cents. Example: 6000 = $60.00"
                 example: 6000
               pay_rate:
                 type: integer
+                description: "Decimal value in cents. Example: 5000 = $50.00"
                 example: 5000
 
     ShiftRelationship:
@@ -602,9 +612,11 @@ components:
           example: 'pending'
         inserted_at:
           type: string
+          format: date-time
           example: '2020-01-01T06:00:00.000000Z'
         updated_at:
           type: string
+          format: date-time
           example: '2020-01-01T06:00:00.000000Z'
 
     ShiftAllocationRelationships:
