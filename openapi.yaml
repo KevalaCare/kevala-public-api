@@ -33,6 +33,16 @@ paths:
       tags:
         - Employees
       summary: Get a list of employees
+      parameters:
+        - name: filters
+          in: query
+          description: Filters applied to the list of employees
+          required: false
+          schema:
+            type: object
+            properties:
+              external_identifier:
+                type: string
       responses:
         '200':
           description: A list of employees in JSON:API format
