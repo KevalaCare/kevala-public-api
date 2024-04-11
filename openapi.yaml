@@ -281,6 +281,9 @@ components:
         data:
           type: object
           properties:
+            id:
+              type: string
+              example: '1'
             type:
               type: string
               enum: [employees]
@@ -290,6 +293,7 @@ components:
             relationships:
               $ref: '#/components/schemas/EmployeeRelationships'
           required:
+            - id
             - type
             - attributes
             - relationships
