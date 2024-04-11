@@ -34,7 +34,7 @@ paths:
         - Employees
       summary: Get a list of employees
       parameters:
-        - name: filters
+        - name: filter
           in: query
           description: Filters applied to the list of employees
           required: false
