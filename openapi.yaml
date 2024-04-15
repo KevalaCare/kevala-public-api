@@ -114,7 +114,12 @@ paths:
         content:
           application/vnd.api+json:
             schema:
-              $ref: '#/components/schemas/EmployeeResource'
+              type: object
+              properties:
+                data:
+                  $ref: '#/components/schemas/EmployeeResponse'
+              required:
+                - data
       responses:
         '200':
           description: Updated employee in JSON:API format
@@ -281,9 +286,6 @@ components:
         data:
           type: object
           properties:
-            id:
-              type: string
-              example: '1'
             type:
               type: string
               enum: [employees]
@@ -293,7 +295,6 @@ components:
             relationships:
               $ref: '#/components/schemas/EmployeeRelationships'
           required:
-            - id
             - type
             - attributes
             - relationships
