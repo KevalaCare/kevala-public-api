@@ -243,7 +243,7 @@ paths:
       parameters:
         - name: page[limit]
           in: query
-          description: 'number of records to be returned (default 50 if not specified, maximum 500)'
+          description: 'number of records to be returned per page (default 50 if not specified, maximum 500)'
           required: false
           schema:
             type: integer
