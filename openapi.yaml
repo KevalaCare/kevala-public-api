@@ -240,6 +240,25 @@ paths:
       tags:
         - Shifts
       summary: Get a list of shifts
+      parameters:
+        - name: page[limit]
+          in: query
+          description: 'number of records to be returned (default 50 if not specified, maximum 500)'
+          required: false
+          schema:
+            type: integer
+        - name: page[before]
+          in: query
+          description: 'pagination cursor to request the previous page of paginated data'
+          required: false
+          schema:
+            type: string
+        - name: page[after]
+          in: query
+          description: 'pagination cursor to request the next page of paginated data'
+          required: false
+          schema:
+            type: string
       responses:
         '200':
           description: A list of shifts in JSON:API format
