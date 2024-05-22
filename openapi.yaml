@@ -249,13 +249,13 @@ paths:
             type: integer
         - name: page[before]
           in: query
-          description: 'link including pagination cursor to request the previous page of paginated data'
+          description: 'pagination cursor to request the previous page of paginated data'
           required: false
           schema:
             type: string
         - name: page[after]
           in: query
-          description: 'link including pagination cursor to request the next page of paginated data'
+          description: 'pagination cursor to request the next page of paginated data'
           required: false
           schema:
             type: string
