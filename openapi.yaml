@@ -240,6 +240,25 @@ paths:
       tags:
         - Shifts
       summary: Get a list of shifts
+      parameters:
+        - name: page[limit]
+          in: query
+          description: 'number of records to be returned per page (default 50 if not specified, maximum 500)'
+          required: false
+          schema:
+            type: integer
+        - name: page[before]
+          in: query
+          description: 'pagination cursor to request the previous page of paginated data'
+          required: false
+          schema:
+            type: string
+        - name: page[after]
+          in: query
+          description: 'pagination cursor to request the next page of paginated data'
+          required: false
+          schema:
+            type: string
       responses:
         '200':
           description: A list of shifts in JSON:API format
@@ -534,6 +553,18 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/LocationResponse'
+        links:
+          type: object
+          properties:
+            self:
+              type: string
+              example: "http://api.kevala.care/v1/shifts?page%5Blimit%5D=5"
+            prev:
+              type: string
+              example: "http://api.kevala.care/v1/shifts?page%5Bbefore%5D=g3QAAAADdwJpZGIAADW8dwdlbmRzX2F0dAAAAA13C21pY3Jvc2Vjb25kaAJiAAa-sWEGdwZzZWNvbmRhBXcIY2FsZW5kYXJ3E0VsaXhpci5DYWxlbmRhci5JU093BW1vbnRoYQV3Cl9fc3RydWN0X193D0VsaXhpci5EYXRlVGltZXcDZGF5YRp3BHllYXJiAAAH6HcGbWludXRlYTZ3BGhvdXJhAncJdGltZV96b25lbQAAAAdFdGMvVVRDdwl6b25lX2FiYnJtAAAAA1VUQ3cKdXRjX29mZnNldGEAdwpzdGRfb2Zmc2V0YQB3CXN0YXJ0c19hdHQAAAANdwttaWNyb3NlY29uZGgCYgAGvrFhBncGc2Vjb25kYQV3CGNhbGVuZGFydxNFbGl4aXIuQ2FsZW5kYXIuSVNPdwVtb250aGEFdwpfX3N0cnVjdF9fdw9FbGl4aXIuRGF0ZVRpbWV3A2RheWEZdwR5ZWFyYgAAB-h3Bm1pbnV0ZWE2dwRob3VyYRJ3CXRpbWVfem9uZW0AAAAHRXRjL1VUQ3cJem9uZV9hYmJybQAAAANVVEN3CnV0Y19vZmZzZXRhAHcKc3RkX29mZnNldGEA&page%5Blimit%5D=5"
+            next:
+              type: string
+              example: "http://api.kevala.care/v1/shifts?page%5Bafter%5D=g3QAAAADdwJpZGIAADWIdwdlbmRzX2F0dAAAAA13C21pY3Jvc2Vjb25kaAJiAAgIb2EGdwZzZWNvbmRhHHcIY2FsZW5kYXJ3E0VsaXhpci5DYWxlbmRhci5JU093BW1vbnRoYQV3Cl9fc3RydWN0X193D0VsaXhpci5EYXRlVGltZXcDZGF5YRp3BHllYXJiAAAH6HcGbWludXRlYTR3BGhvdXJhAXcJdGltZV96b25lbQAAAAdFdGMvVVRDdwl6b25lX2FiYnJtAAAAA1VUQ3cKdXRjX29mZnNldGEAdwpzdGRfb2Zmc2V0YQB3CXN0YXJ0c19hdHQAAAANdwttaWNyb3NlY29uZGgCYgAICG9hBncGc2Vjb25kYRx3CGNhbGVuZGFydxNFbGl4aXIuQ2FsZW5kYXIuSVNPdwVtb250aGEFdwpfX3N0cnVjdF9fdw9FbGl4aXIuRGF0ZVRpbWV3A2RheWEZdwR5ZWFyYgAAB-h3Bm1pbnV0ZWE0dwRob3VyYRF3CXRpbWVfem9uZW0AAAAHRXRjL1VUQ3cJem9uZV9hYmJybQAAAANVVEN3CnV0Y19vZmZzZXRhAHcKc3RkX29mZnNldGEA&page%5Blimit%5D=5"
 
     ShiftResponse:
       type: object
